@@ -6,10 +6,14 @@ in another terminal run: mlflow ui
 import streamlit as st
 from modelstore import ModelStore
 from streamlit_option_menu import option_menu
+# import extra_streamlit_components as stx
+
 import pandas as pd
 from pandas_profiling import ProfileReport
 from streamlit_pandas_profiling import st_profile_report
 import matplotlib.pyplot as plt
+
+
 
 plt.style.use('dark_background')
 import shutil
@@ -30,9 +34,37 @@ import webbrowser
 import logging
 import shutil
 
+
+# def show_stepper_bar():
+#     st.write("# Stepper Bar")
+#     c1, c2, c3 = st.columns([1, 3, 1])
+#     with c1:
+#         st.write("Horizontal")
+#     with c2:
+#         is_vertical = (st.slider("Orientation", min_value=0, max_value=1, value=0) or 0) == 1
+#     with c3:
+#         st.write("Vertical")
+
+#     is_sequence_locked = st.checkbox("Lock Sequence", value=True)
+
+#     if is_vertical:
+#         c1, c2 = st.columns([1, 3])
+#         with c1:
+#             val = stx.stepper_bar(steps=["Ready", "Get Set", "Go"], is_vertical=is_vertical, lock_sequence=is_sequence_locked)
+#         with c2:
+#             st.info(f"Phase #{val}")
+#     else:
+#         val = stx.stepper_bar(steps=["Ready", "Get Set", "Go"], is_vertical=is_vertical, lock_sequence=is_sequence_locked)
+
+#         st.info(f"Phase #{val}")
+
+#     st.code("""
+#         val = stx.stepper_bar(steps=["Ready", "Get Set", "Go"], is_vertical=False)
+#     """)
+
 def save_model(st,final_model_info='final_model_info.json'):
 
-    with open(final_model_info,'rb') as f:
+    with open(final_model_info,'r') as f:
         final_model_info=json.load(f) 
 
     with st.expander('当前模型信息'):
@@ -199,7 +231,7 @@ def data_process(st, **state):
         # st.json(filter_cols)
         if st.button('保存'):
             with open('filter_cols.json','w') as f:
-                json.dump(filter_cols,f)
+                json.dump(filter_cols,f,ensure_ascii=False)
                 st.success("保存成功")
 
         filter_dataframe=dataframe[[k for k,v in filter_cols.items() if v]]               
@@ -228,7 +260,7 @@ def build_model(st,**state):
         else:
             model_config={"target_col":''}
             with open('model_config.json','w') as f:
-                json.dump(model_config,f,indent=4)
+                json.dump(model_config,f,indent=4,ensure_ascii=False)
                     
             
         if model_config["target_col"] in columns:
@@ -352,7 +384,7 @@ def build_model(st,**state):
                 st.write('r2: ',round(r2,4),'rmse: ',round(rmse,4),'mae: ',round(mae,4))                                      
             # st.write(final_model_info)
             with open('final_model_info.json','w') as f:
-                json.dump(final_model_info,f)           
+                json.dump(final_model_info,f,ensure_ascii=False)           
             st.success('模型已经创建')
           
         elif start_train and target_col is not None and task == '分类':  
@@ -478,7 +510,7 @@ def build_model(st,**state):
                 # st.write(final_model_info)
                 final_model_info_dict[target_name]=final_model_info
             with open('final_model_info.json','w') as f:
-                json.dump(final_model_info_dict,f,indent=4)           
+                json.dump(final_model_info_dict,f,indent=4,ensure_ascii=False)           
             st.success('模型已经创建')        
         
         
@@ -714,7 +746,7 @@ def create_app(st,**state):
                             model_idname_info=json.load(f)
                             
                         with open('model_config.json','r') as f:
-                            model_config=json.load(f)
+                            model_config=json.load(f, encoding="utf8")
                         domain='./'+filename[0:-4]+'/'+env_button+'/'+uploaded_model
                         # model_ids=model_store.list_models('./'+filename[0:-4]+'/'+env_button+'/'+uploaded_model)
                         # st.write(model_ids)
@@ -1270,7 +1302,7 @@ if __name__ == '__main__':
         
     if choose =="系统日志":
         log_records(st)         
-       
+    # show_stepper_bar()   
     # col1,col2= st.sidebar.columns([1,6])
     # with col1:
     for i in range(20):

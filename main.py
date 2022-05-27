@@ -208,8 +208,8 @@ def data_process(st, **state):
             st.table(dataframe.describe())
             
         with st.expander("数据筛选"): 
-            with open('filter_cols.json','r',encoding='gb18030') as f:
-                filter_cols_last=json.load(f)
+            with open('filter_cols.json','r') as f:
+                filter_cols_last=json.load(f,encoding="GB2312")
             if dataframe.columns[0] not in filter_cols_last:
                 filter_cols_last=dict(zip(dataframe.columns,[1]*len(dataframe.columns)))
                 
